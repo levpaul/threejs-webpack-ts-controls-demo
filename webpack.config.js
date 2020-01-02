@@ -19,11 +19,6 @@ module.exports = {
                     'babel-loader',
                 ]
             },
-            // {
-            //   test: /\.tsx?$/,
-            //   use: 'ts-loader',
-            //   exclude: /node_modules/,
-            // },
             {
                 test: /.css$/,
                 use: [
@@ -35,7 +30,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: "Levi's Three.js App",
+            title: "Three.js Sample App",
             template: 'src/html/template.html'
         }),
         new MiniCssExtractPlugin()

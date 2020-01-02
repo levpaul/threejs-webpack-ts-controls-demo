@@ -1,45 +1,20 @@
-# three.js + webpack4 demo
+# three.js + webpack + typescript FPS controls demo
 
-- 测试以es6语法，使用webpack4打包three.js应用
+This serves as a basis for a three.js project using webpack and typescript. This is my first toy project using three.js and I borrowed heavily from some of the three.js examples like minecraft and pointerlock.
 
-## 运行应用
-
+Usage:
 ```bash
-# 安装package.json的依赖包
 $ npm install
 
-# 运行应用
 $ npm run start
 
-# 打包应用
 $ npm run build
 
-# 完成打包后打包的应用位于dist/目录，可以直接运行查看效果
-$ ls -l dist
-total 992
--rw-r--r--  1 cookeem  staff  500492  1 23 15:52 bundle.js
--rw-r--r--@ 1 cookeem  staff     183  1 23 15:52 index.html
+$ ls -l
+total 600
+-rw-r--r-- 1 levi levi 605871 Jan  2 15:33 bundle.js
+-rw-r--r-- 1 levi levi    519 Jan  2 15:33 index.html
+-rw-r--r-- 1 levi levi    698 Jan  2 15:33 main.css
 ```
 
-## 如何创建package.json
 
-```bash
-# 初始化npm包
-$ npm init
-
-# 安装包webpack依赖包
-$ npm install webpack webpack-cli webpack-dev-server html-webpack-plugin -D --save
-
-# 安装es6支持
-$ npm install babel-loader@8 @babel/core @babel/preset-env -D --save
-
-# 安装three.js
-$ npm install three.js -D --save
-
-# 设置package.json
-$ vi package.json
-  "scripts": {
-    "start": "webpack-dev-server --mode development --open",
-    "build": "webpack --mode production"
-  },
-```
