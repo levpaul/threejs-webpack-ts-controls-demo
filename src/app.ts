@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 import '../css/style.css';
 import {InputController} from "./controls";
-import {Camera, Geometry, Material, Mesh, Renderer, Scene} from "three";
+import {Geometry, Material, Mesh, PerspectiveCamera, Renderer, Scene} from "three";
 
-let camera: Camera;
+let camera: PerspectiveCamera;
 let scene: Scene;
 let renderer: Renderer;
 let gameContainer: HTMLElement;
-let geometry : Geometry;
-let material : Material;
+let geometry: Geometry;
+let material: Material;
 let mesh: Mesh;
 let ground: Mesh;
 

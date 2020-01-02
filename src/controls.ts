@@ -37,8 +37,8 @@ export class InputController {
         this.cfg = config;
         this.plc = new PointerLockControls(config.camera, config.renderDom);
 
-        this.blocker = document.getElementById('blocker');
-        this.instructions = document.getElementById('instructions');
+        this.blocker = document.getElementById('blocker') as HTMLElement;
+        this.instructions = document.getElementById('instructions') as HTMLElement;
 
         this.instructions.addEventListener('click', () => this.plc.lock());
         this.plc.addEventListener('lock', () => this.lock());
@@ -63,7 +63,7 @@ export class InputController {
     }
 
     handleControl() {
-        if (this.isLocked === true) {
+        if (this.isLocked) {
             let timeDelta: number = clock.getDelta();
             this.velocity.x -= this.velocity.x * 10.0 * timeDelta;
             this.velocity.y -= this.velocity.y * 10.0 * timeDelta;
@@ -114,9 +114,8 @@ export class InputController {
                 this.moveDown = true;
                 break;
             case 73: // i
-                console.log("ASDF" + this.statsEnabled)
                 this.statsEnabled = !this.statsEnabled;
-                if (this.statsEnabled === true) {
+                if (this.statsEnabled) {
                     this.cfg.gameContainer.appendChild(this.stats.dom);
                 } else {
                     this.cfg.gameContainer.removeChild(this.stats.dom);
