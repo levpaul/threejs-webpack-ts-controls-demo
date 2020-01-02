@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require("path");
 
 module.exports = {
@@ -17,13 +18,18 @@ module.exports = {
         use: {
           loader: 'babel-loader'
         }
+      },
+      {
+        test: /.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
       }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Three.js App',
-      filename: 'index.html'
-    })
+      title: "Levi's Three.js App",
+      template: 'src/template.html'
+    }),
+    new MiniCssExtractPlugin()
   ]
 };
