@@ -1,12 +1,18 @@
 import * as THREE from 'three';
-import * as CONTROLS from './controls.js'
-// import Stats from './jsm/libs/stats.module.js';
-import Stats from "three/examples/jsm/libs/stats.module";
 import '../css/style.css';
+import {InputController} from "./controls";
+import {Camera, Geometry, Material, Mesh, Renderer, Scene} from "three";
 
-let camera, scene, renderer, stats, gameContainer;
-let geometry, material, mesh, ground;
-let statsEnabled = false;
+let camera: Camera;
+let scene: Scene;
+let renderer: Renderer;
+let gameContainer: HTMLElement;
+let geometry : Geometry;
+let material : Material;
+let mesh: Mesh;
+let ground: Mesh;
+
+let inputController: InputController;
 
 init();
 animate();
@@ -39,11 +45,14 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     gameContainer.appendChild(renderer.domElement);
 
-    CONTROLS.initCtl(camera, renderer.domElement);
+
+    inputController = new InputController({
+        "camera": camera,
+        renderDom: renderer.domElement,
+        gameContainer: gameContainer
+    });
 
     // Stats
-    stats = new Stats();
-
     window.addEventListener('resize', onWindowResize, false);
 }
 
@@ -55,10 +64,8 @@ function animate() {
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.01;
 
-    CONTROLS.handleControl();
-    if (statsEnabled === true) {
-        stats.update();
-    }
+    inputController.handleControl();
+    inputController.handleStats();
     renderer.render(scene, camera);
 }
 
@@ -75,16 +82,3 @@ function onWindowResize() {
 // 	console.error(error);
 // });
 
-// STATS CONTROL - TODO: Move this to control file
-let statsKeyDown = function (event) {
-    if (event.keyCode === 73) {
-        statsEnabled = !statsEnabled;
-        if (statsEnabled === true) {
-            gameContainer.appendChild(stats.dom);
-        } else {
-            gameContainer.removeChild(stats.dom);
-        }
-    }
-};
-
-document.addEventListener('keydown', statsKeyDown, false);
