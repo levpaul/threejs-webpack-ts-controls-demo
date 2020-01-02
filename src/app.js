@@ -9,53 +9,48 @@ init();
 animate();
 
 function init() {
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000);
-	camera.position.z = 1;
-	camera.position.y = 0.1;
-	// camera.rotateX(9)
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
+    camera.position.z = 1;
+    camera.position.y = 0.1;
 
-	scene = new THREE.Scene();
+    scene = new THREE.Scene();
 
-	geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
-	material = new THREE.MeshNormalMaterial({wireframe: true});
-	mesh = new THREE.Mesh( geometry, material );
-	mesh.translateY(0.3);
+    geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+    material = new THREE.MeshNormalMaterial({wireframe: true});
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.translateY(0.3);
+    scene.add(mesh);
 
-	scene.add( mesh );
+    let groundP = new THREE.PlaneGeometry(21, 20, 32);
+    ground = new THREE.Mesh(groundP, material);
+    scene.add(ground);
+    ground.rotateX(Math.PI / 2);
 
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-	let groundP = new THREE.PlaneGeometry(20,20,32);
-	ground = new THREE.Mesh(groundP, material);
-	scene.add(ground);
-	ground.rotateX(1);
+    CONTROLS.initCtl(camera, renderer.domElement);
 
-
-	renderer = new THREE.WebGLRenderer( { antialias: true } );
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	document.body.appendChild( renderer.domElement );
-
-	CONTROLS.initCtl(camera, renderer.domElement);
-
-	window.addEventListener( 'resize', onWindowResize, false );
+    window.addEventListener('resize', onWindowResize, false);
 }
 
 let animationId;
+
 function animate() {
-	animationId = requestAnimationFrame( animate );
+    animationId = requestAnimationFrame(animate);
 
-	// ground.rotation.x += 0.01
-	mesh.rotation.x += 0.01;
-	mesh.rotation.y += 0.01;
-	// controls.update(clock.getDelta());
+    mesh.rotation.x += 0.01;
+    mesh.rotation.y += 0.01;
 
-	CONTROLS.handleControl();
-	renderer.render( scene, camera );
+    CONTROLS.handleControl();
+    renderer.render(scene, camera);
 }
 
 function onWindowResize() {
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
-	renderer.setSize( window.innerWidth, window.innerHeight );
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
 // let loader = new GLTFLoader();

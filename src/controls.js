@@ -4,7 +4,7 @@ import {Clock} from "three";
 
 let controls;
 const clock = new Clock();
-const moveAccel = 200.0;
+const moveAccel = 50.0;
 
 let moveForward = false;
 let moveBackward = false;
@@ -17,51 +17,50 @@ let canJump = false;
 let velocity = new Vector3();
 let direction = new Vector3();
 
-export function initCtl(cam, domEl) {
+function initCtl(cam, domEl) {
     controls = new PointerLockControls(cam, domEl);
-    let blocker = document.getElementById( 'blocker' );
-    let instructions = document.getElementById( 'instructions' );
-    instructions.addEventListener( 'click', function () {
+    let blocker = document.getElementById('blocker');
+    let instructions = document.getElementById('instructions');
+    instructions.addEventListener('click', function () {
         controls.lock();
-    }, false );
-    controls.addEventListener( 'lock', function () {
+    }, false);
+    controls.addEventListener('lock', function () {
         instructions.style.display = 'none';
         blocker.style.display = 'none';
-    } );
-    controls.addEventListener( 'unlock', function () {
+    });
+    controls.addEventListener('unlock', function () {
         blocker.style.display = 'block';
         instructions.style.display = '';
-    } );
+    });
 }
 
-export function handleControl() {
-    if ( controls.isLocked === true ) {
+function handleControl() {
+    if (controls.isLocked === true) {
         // console.log(controls.GetObject().get)
-        console.log("pos: " + controls.getObject().position.x + " " + controls.getObject().position.y + " " + controls.getObject().position.z );
+        // console.log("pos: " + controls.getObject().position.x + " " + controls.getObject().position.y + " " + controls.getObject().position.z );
         // console.log("Vel: " + velocity.x + " " + velocity.y + " " + velocity.z);
         let timeDelta = clock.getDelta();
         velocity.x -= velocity.x * 10.0 * timeDelta;
         velocity.y -= velocity.y * 10.0 * timeDelta;
         velocity.z -= velocity.z * 10.0 * timeDelta;
-        // velocity.y -= 9.8 * 100.0 * timeDelta; // 100.0 = mass
 
-        direction.z = Number( moveForward ) - Number( moveBackward );
-        direction.x = Number( moveRight ) - Number( moveLeft );
-        direction.y = Number( moveDown) - Number( moveUp);
-        direction.normalize(); // this ensures consistent movements in all directions
+        direction.z = Number(moveForward) - Number(moveBackward);
+        direction.x = Number(moveRight) - Number(moveLeft);
+        direction.y = Number(moveDown) - Number(moveUp);
+        direction.normalize(); // this ensures consistent movements in all directions - does it??
 
-        if ( moveForward || moveBackward ) velocity.z -= direction.z * moveAccel * timeDelta;
-        if ( moveLeft || moveRight ) velocity.x -= direction.x * moveAccel * timeDelta;
-        if ( moveUp || moveDown ) velocity.y -= direction.y * moveAccel * timeDelta;
+        if (moveForward || moveBackward) velocity.z -= direction.z * moveAccel * timeDelta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * moveAccel * timeDelta;
+        if (moveUp || moveDown) velocity.y -= direction.y * moveAccel * timeDelta;
 
-        controls.moveRight( - velocity.x * timeDelta );
-        controls.moveForward( - velocity.z * timeDelta);
+        controls.moveRight(-velocity.x * timeDelta);
+        controls.moveForward(-velocity.z * timeDelta);
         controls.getObject().position.y += velocity.y * timeDelta;
     }
 }
 
-var onKeyDown = function ( event ) {
-    switch ( event.keyCode ) {
+let onKeyDown = function (event) {
+    switch (event.keyCode) {
         case 38: // up
         case 87: // w
             moveForward = true;
@@ -87,8 +86,8 @@ var onKeyDown = function ( event ) {
     }
 };
 
-var onKeyUp = function ( event ) {
-    switch ( event.keyCode ) {
+let onKeyUp = function (event) {
+    switch (event.keyCode) {
         case 38: // up
         case 87: // w
             moveForward = false;
@@ -113,13 +112,43 @@ var onKeyUp = function ( event ) {
             break;
     }
 };
-document.addEventListener( 'keydown', onKeyDown, false );
-document.addEventListener( 'keyup', onKeyUp, false );
+
+let onMouseDown = function (event) {
+    switch (event.button) {
+        case 0: // left
+            moveForward = true;
+            break;
+        case 1: // middle
+            break;
+        case 2: // right
+            moveBackward = true;
+            break;
+    }
+};
+
+let onMouseUp = function (event) {
+    switch (event.button) {
+        case 0: // left
+            moveForward = false;
+            break;
+        case 1: // middle
+            break;
+        case 2: // right
+            moveBackward = false;
+            break;
+    }
+};
+
+document.addEventListener('mousedown', onMouseDown, false);
+document.addEventListener('mouseup', onMouseUp, false);
+document.addEventListener('keydown', onKeyDown, false);
+document.addEventListener('keyup', onKeyUp, false);
 
 // Stop ctrl+s from saving ctrl +d from bookmark - doesn't work for ctrl+w exit (use fullscreen for this)
-document.addEventListener("keydown", function(e) {
-    if ((e.keyCode === 68 || e.keyCode === 83 || e.keyCode === 65 || e.keyCode == 87)  && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+document.addEventListener("keydown", function (e) {
+    if ((e.keyCode === 68 || e.keyCode === 83 || e.keyCode === 65) && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
         e.preventDefault();
     }
 }, false);
 
+export {initCtl, handleControl}
