@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const path = require("path");
 
 module.exports = {
@@ -20,12 +21,12 @@ module.exports = {
                 ]
             },
             {
-                test: /.css$/,
+                test: /\.css$/,
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
                 ]
-            }
+            },
         ]
     },
     plugins: [
@@ -33,7 +34,10 @@ module.exports = {
             title: "Three.js Sample App",
             template: 'src/html/template.html'
         }),
-        new MiniCssExtractPlugin()
+        new MiniCssExtractPlugin(),
+        new CopyPlugin([
+            { from: 'src/assets', to: 'assets' },
+        ]),
     ],
     resolve: {
         extensions: ['.ts', '.js', '.json']
