@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import '../css/style.css';
-import {InputController} from "./controls";
-import {Geometry, Material, Mesh, PerspectiveCamera, Renderer, Scene} from "three";
+import {InputController} from './controls';
+import {Geometry, Material, Mesh, PerspectiveCamera, Renderer, Scene, Vector3} from 'three';
 
 let camera: PerspectiveCamera;
 let scene: Scene;
@@ -9,42 +9,49 @@ let renderer: Renderer;
 let gameContainer: HTMLElement;
 let geometry: Geometry;
 let material: Material;
-let mesh: Mesh;
+let cube: Mesh;
 let ground: Mesh;
 
 let inputController: InputController;
+let terrain: Mesh;
 
 init();
 animate();
 
 function init() {
-    scene = new THREE.Scene();
     gameContainer = document.createElement('div');
     document.body.append(gameContainer);
 
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xa0a0a0);
+    scene.fog = new THREE.Fog(0xa0a0a0, 10, 50);
+
     // Camera
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
-    camera.position.z = 1;
-    camera.position.y = 0.1;
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    let hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
+    hemiLight.position.set(0, 20, 0);
+    scene.add(hemiLight);
 
     // Cube
     geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-    material = new THREE.MeshNormalMaterial({wireframe: true});
-    mesh = new THREE.Mesh(geometry, material);
-    mesh.translateY(0.3);
-    scene.add(mesh);
+    material = new THREE.MeshNormalMaterial({wireframe: false});
+    cube = new THREE.Mesh(geometry, material);
+    cube .translateY(0.3);
+    scene.add(cube);
 
-    // Ground
-    let groundP = new THREE.PlaneGeometry(21, 20, 32);
-    ground = new THREE.Mesh(groundP, material);
+    // Ground Terrain
+    let groundP = new THREE.PlaneBufferGeometry(100, 100);
+    let groundM = new THREE.MeshPhongMaterial({color: 0x999999, depthWrite: false});
+    ground = new THREE.Mesh(groundP, groundM);
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
     scene.add(ground);
-    ground.rotateX(Math.PI / 2);
 
     // Renderer
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     gameContainer.appendChild(renderer.domElement);
-
 
     inputController = new InputController({
         "camera": camera,
@@ -52,20 +59,25 @@ function init() {
         gameContainer: gameContainer
     });
 
-    // Stats
     window.addEventListener('resize', onWindowResize, false);
+
+    var light = new THREE.AmbientLight(0xFFFFFF);
+
+    scene.add(light);
+
+    camera.position.set(1, 2, -7);
+    camera.lookAt(cube.position);
 }
 
-let animationId;
-
 function animate() {
-    animationId = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 
-    mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.01;
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
 
     inputController.handleControl();
     inputController.handleStats();
+
     renderer.render(scene, camera);
 }
 
@@ -74,11 +86,4 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
-
-// let loader = new GLTFLoader();
-// loader.load('../models/room.glb', function (gltf) {
-// 	scene.add(gltf.scene);
-// }, undefined, function (error) {
-// 	console.error(error);
-// });
 
