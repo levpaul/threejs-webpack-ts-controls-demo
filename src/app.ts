@@ -2,8 +2,6 @@ import '../css/style.css';
 import * as THREE from 'three';
 import * as CONTROLS from './controls';
 import * as TERRAIN from './terrain';
-import {MobileDetect} from 'mobile-detect';
-
 
 let camera: THREE.PerspectiveCamera;
 let scene: THREE.Scene;
