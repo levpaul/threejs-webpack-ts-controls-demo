@@ -1,22 +1,48 @@
-import {Vector3, Clock, Camera} from 'three';
-import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls';
+import * as THREE from 'three'
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import {PointerLockControls} from "three/examples/jsm/controls/PointerLockControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 
-const clock = new Clock();
+const clock = new THREE.Clock();
 const moveAccel = 50.0;
 
 interface ControlConfig {
-    camera: Camera;
+    camera: THREE.Camera;
     renderDom: HTMLElement;
     gameContainer: HTMLElement;
+    isMobile: boolean;
 }
 
-export class InputController {
+export interface InputController {
+    handleControl();
+}
+
+export function getController(params: ControlConfig): InputController {
+    if (params.isMobile == true) {
+        return new OrbitControlsInputController(params as ControlConfig);
+    } else {
+        return new PointerLockInputController(params as ControlConfig);
+    }
+}
+
+class OrbitControlsInputController {
+    controls: OrbitControls;
+
+    constructor(config: ControlConfig) {
+        this.controls = new OrbitControls(config.camera, config.renderDom);
+    }
+
+    handleControl() {
+        this.controls.update();
+    }
+}
+
+class PointerLockInputController {
     cfg: ControlConfig;
     plc: PointerLockControls;
 
-    velocity: Vector3 = new Vector3();
-    direction: Vector3 = new Vector3();
+    velocity: THREE.Vector3 = new THREE.Vector3();
+    direction: THREE.Vector3 = new THREE.Vector3();
     moveForward: boolean = false;
     moveBackward: boolean = false;
     moveLeft: boolean = false;
@@ -24,7 +50,6 @@ export class InputController {
     moveUp: boolean = false;
     moveDown: boolean = false;
     isLocked: boolean = false;
-
 
     // @ts-ignore
     stats: Stats = new Stats();
@@ -63,8 +88,8 @@ export class InputController {
     }
 
     handleControl() {
+        let timeDelta: number = clock.getDelta();
         if (this.isLocked) {
-            let timeDelta: number = clock.getDelta();
             this.velocity.x -= this.velocity.x * 10.0 * timeDelta;
             this.velocity.y -= this.velocity.y * 10.0 * timeDelta;
             this.velocity.z -= this.velocity.z * 10.0 * timeDelta;
@@ -82,14 +107,18 @@ export class InputController {
             this.plc.moveForward(-this.velocity.z * timeDelta);
             this.plc.getObject().position.y += this.velocity.y * timeDelta;
         }
-    }
 
-    handleStats() {
+        // TODO: Remove this from controller and put into its own class/module
         if (this.statsEnabled)
             this.stats.update();
     }
 
     onKeyDown(e: KeyboardEvent) {
+        // Stop ctrl+s from saving ctrl +d from bookmark - doesn't work for ctrl+w exit (use fullscreen for this)
+        if ((e.keyCode === 68 || e.keyCode === 83 || e.keyCode === 65) && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+            e.preventDefault();
+        }
+
         switch (e.keyCode) {
             case 38: // up
             case 87: // w
@@ -178,10 +207,4 @@ export class InputController {
     }
 }
 
-// Stop ctrl+s from saving ctrl +d from bookmark - doesn't work for ctrl+w exit (use fullscreen for this)
-document.addEventListener("keydown", function (e: KeyboardEvent) {
-    if ((e.keyCode === 68 || e.keyCode === 83 || e.keyCode === 65) && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
-        e.preventDefault();
-    }
-}, false);
 
