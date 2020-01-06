@@ -2,14 +2,14 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": false,
-    "strict": true,
     "module": "es6",
     "moduleResolution": "node",
     "target": "es5",
     "jsx": "react",
     "allowJs": true,
     "sourceMap": true,
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*"

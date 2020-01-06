@@ -2,27 +2,59 @@ import * as THREE from 'three'
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {PointerLockControls} from "three/examples/jsm/controls/PointerLockControls";
 import Stats from "three/examples/jsm/libs/stats.module";
+import React, {useState} from "react";
 
 const clock = new THREE.Clock();
 const moveAccel = 50.0;
 
+export let controller: InputController;
+
+export const Controls = (cCfg: ControlConfig) => {
+    if (cCfg.isMobile) {
+        if (controller == null) {
+            controller = new OrbitControlsInputController(cCfg);
+        }
+        return null;
+    } else {
+        const [pointerLocked, setPointerLocked] = useState(false);
+        if (controller == null) {
+            controller = new PointerLockInputController(cCfg);
+            controller.plc.addEventListener("unlock", () => {
+                setPointerLocked(false);
+            });
+        }
+        controller.isLocked = pointerLocked;
+        if (pointerLocked) {
+            controller.plc.lock();
+        }
+
+        return <>
+            <div id="blocker" style={{display: pointerLocked ? "none" : "block"}}>
+                <div id="instructions" onClick={() => {
+                    setPointerLocked(!pointerLocked)
+                }} style={{display: pointerLocked ? "none" : ""}}>
+                    <span style={{fontSize: 36 + 'px'}}>Click to play</span>
+                    <br/><br/>
+                    Move: WASD<br/>
+                    Jump: SPACE<br/>
+                    Look: MOUSE
+                </div>
+            </div>
+        </>
+    }
+};
+
 interface ControlConfig {
     camera: THREE.Camera;
     renderDom: HTMLElement;
-    gameContainer: HTMLElement;
     isMobile: boolean;
 }
 
 export interface InputController {
-    handleControl();
-}
+    handleControl(): void;
 
-export function getController(params: ControlConfig): InputController {
-    if (params.isMobile == true) {
-        return new OrbitControlsInputController(params as ControlConfig);
-    } else {
-        return new PointerLockInputController(params as ControlConfig);
-    }
+    plc?: PointerLockControls;
+    isLocked?: boolean;
 }
 
 class OrbitControlsInputController {
@@ -32,7 +64,7 @@ class OrbitControlsInputController {
         this.controls = new OrbitControls(config.camera, config.renderDom);
     }
 
-    handleControl() {
+    handleControl(): void {
         this.controls.update();
     }
 }
@@ -55,36 +87,15 @@ class PointerLockInputController {
     stats: Stats = new Stats();
     statsEnabled: boolean = false;
 
-    blocker: HTMLElement;
-    instructions: HTMLElement;
 
     constructor(config: ControlConfig) {
         this.cfg = config;
         this.plc = new PointerLockControls(config.camera, config.renderDom);
 
-        this.blocker = document.getElementById('blocker') as HTMLElement;
-        this.instructions = document.getElementById('instructions') as HTMLElement;
-
-        this.instructions.addEventListener('click', () => this.plc.lock());
-        this.plc.addEventListener('lock', () => this.lock());
-        this.plc.addEventListener('unlock', () => this.unlock());
-
         document.addEventListener('mousedown', e => this.onMouseDown(e));
         document.addEventListener('mouseup', e => this.onMouseUp(e));
         document.addEventListener('keydown', e => this.onKeyDown(e));
         document.addEventListener('keyup', e => this.onKeyUp(e));
-    }
-
-    lock() {
-        this.instructions.style.display = 'none';
-        this.blocker.style.display = 'none';
-        this.isLocked = true;
-    }
-
-    unlock() {
-        this.blocker.style.display = 'block';
-        this.instructions.style.display = '';
-        this.isLocked = false;
     }
 
     handleControl() {
@@ -144,11 +155,12 @@ class PointerLockInputController {
                 break;
             case 73: // i
                 this.statsEnabled = !this.statsEnabled;
-                if (this.statsEnabled) {
-                    this.cfg.gameContainer.appendChild(this.stats.dom);
-                } else {
-                    this.cfg.gameContainer.removeChild(this.stats.dom);
-                }
+                console.log("Stats go here but are disbaled atm")
+                // if (this.statsEnabled) {
+                //     this.cfg.gameContainer.appendChild(this.stats.dom);
+                // } else {
+                //     this.cfg.gameContainer.removeChild(this.stats.dom);
+                // }
                 break;
         }
     }

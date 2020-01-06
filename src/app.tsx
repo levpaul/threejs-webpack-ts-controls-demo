@@ -1,30 +1,31 @@
 import './css/style.css';
 import * as THREE from 'three';
-import * as CONTROLS from './controls';
-import * as TERRAIN from './terrain';
+import {InputController, Controls, controller} from './controls';
+import {getGround} from './terrain';
+import * as React from 'react'
+import ReactDOM from "react-dom";
+import {useEffect} from "react";
 
 let camera: THREE.PerspectiveCamera;
 let scene: THREE.Scene;
 let renderer: THREE.Renderer;
-let gameContainer: HTMLElement;
 let geometry: THREE.Geometry;
 let material: THREE.Material;
 let cube: THREE.Mesh;
 
-let inputController: CONTROLS.InputController;
-let lights: Array<THREE.Light> = new Array<THREE.Light>();
+const lights: Array<THREE.Light> = new Array<THREE.Light>();
 
-let isMobile: boolean = false;
+const isMobile: boolean = testMobile();
 
-init();
-animate();
+const App = () => {
+    return (
+        <ThreeCanvas/>
+    )
+};
 
-function init() {
+const ThreeCanvas = () => {
     // Setup
-    gameContainer = document.createElement('div');
-    document.body.append(gameContainer);
     window.addEventListener('resize', onWindowResize, false);
-    handleMobile();
 
     // Scene
     scene = new THREE.Scene();
@@ -42,20 +43,11 @@ function init() {
     scene.add(cube);
 
     // Terrain
-    scene.add(TERRAIN.getGround());
+    scene.add(getGround());
 
     // Renderer
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    gameContainer.appendChild(renderer.domElement);
-
-    // Controls
-    inputController = CONTROLS.getController({
-        "camera": camera,
-        renderDom: renderer.domElement,
-        gameContainer: gameContainer,
-        isMobile: isMobile
-    });
 
     // Light
     lights.push(new THREE.AmbientLight(0x333333));
@@ -71,18 +63,32 @@ function init() {
     // Final Camera
     camera.position.set(3, 3.5, -4);
     camera.lookAt(cube.position);
-}
 
-function animate() {
-    requestAnimationFrame(animate);
+    // Begin animation loop
+    const animate = () => {
+        requestAnimationFrame(animate);
 
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
 
-    inputController.handleControl();
+        if (controller != null)
+            controller.handleControl();
 
-    renderer.render(scene, camera);
-}
+        renderer.render(scene, camera);
+    };
+    animate();
+
+    // Get the actual THREE.js Canvas
+    let ref = React.useRef<HTMLCanvasElement>();
+    useEffect(() => {
+        ref.current.replaceWith(renderer.domElement);
+    }, []);
+
+    return (<>
+        <Controls camera={camera} renderDom={renderer.domElement} isMobile={isMobile}/>
+        <canvas ref={ref as React.MutableRefObject<HTMLCanvasElement>}/>
+    </>);
+};
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -90,14 +96,9 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-function handleMobile() {
-    // TODO: Remove this as it's a terrible idea
-    if (/mobile/i.test(window.navigator.userAgent)){
-        isMobile = true;
-        // TODO: Remove this as it is a smell - maybe react can help here?
-        let blocker = document.getElementById('blocker') as HTMLElement;
-        let instructions = document.getElementById('instructions') as HTMLElement;
-        blocker.style.display = 'none';
-        instructions.style.display = 'none';
-    }
+function testMobile(): boolean {
+    return /mobile/i.test(window.navigator.userAgent);
 }
+
+const root = document.getElementById('root');
+ReactDOM.render(<App/>, root);
