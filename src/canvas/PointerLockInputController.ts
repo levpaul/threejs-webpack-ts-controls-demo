@@ -1,76 +1,12 @@
 import * as THREE from 'three'
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {PointerLockControls} from "three/examples/jsm/controls/PointerLockControls";
-import Stats from "three/examples/jsm/libs/stats.module";
-import React, {useState} from "react";
+import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls';
+import Stats from 'three/examples/jsm/libs/stats.module';
+import Canvas from './Canvas';
 
 const clock = new THREE.Clock();
 const moveAccel = 50.0;
 
-export let controller: InputController;
-
-export const Controls = (cCfg: ControlConfig) => {
-    if (cCfg.isMobile) {
-        if (controller == null) {
-            controller = new OrbitControlsInputController(cCfg);
-        }
-        return null;
-    } else {
-        const [pointerLocked, setPointerLocked] = useState(false);
-        if (controller == null) {
-            controller = new PointerLockInputController(cCfg);
-            controller.plc.addEventListener("unlock", () => {
-                setPointerLocked(false);
-            });
-        }
-        controller.isLocked = pointerLocked;
-        if (pointerLocked) {
-            controller.plc.lock();
-        }
-
-        return <>
-            <div id="blocker" style={{display: pointerLocked ? "none" : "block"}}>
-                <div id="instructions" onClick={() => {
-                    setPointerLocked(!pointerLocked)
-                }} style={{display: pointerLocked ? "none" : ""}}>
-                    <span style={{fontSize: 36 + 'px'}}>Click to play</span>
-                    <br/><br/>
-                    Move: WASD<br/>
-                    Jump: SPACE<br/>
-                    Look: MOUSE
-                </div>
-            </div>
-        </>
-    }
-};
-
-interface ControlConfig {
-    camera: THREE.Camera;
-    renderDom: HTMLElement;
-    isMobile: boolean;
-}
-
-export interface InputController {
-    handleControl(): void;
-
-    plc?: PointerLockControls;
-    isLocked?: boolean;
-}
-
-class OrbitControlsInputController {
-    controls: OrbitControls;
-
-    constructor(config: ControlConfig) {
-        this.controls = new OrbitControls(config.camera, config.renderDom);
-    }
-
-    handleControl(): void {
-        this.controls.update();
-    }
-}
-
-class PointerLockInputController {
-    cfg: ControlConfig;
+export default class PointerLockInputController {
     plc: PointerLockControls;
 
     velocity: THREE.Vector3 = new THREE.Vector3();
@@ -88,9 +24,8 @@ class PointerLockInputController {
     statsEnabled: boolean = false;
 
 
-    constructor(config: ControlConfig) {
-        this.cfg = config;
-        this.plc = new PointerLockControls(config.camera, config.renderDom);
+    constructor(canvas: Canvas) {
+        this.plc = new PointerLockControls(canvas.getCamera(), canvas.getRenderer().domElement);
 
         document.addEventListener('mousedown', e => this.onMouseDown(e));
         document.addEventListener('mouseup', e => this.onMouseUp(e));
@@ -126,7 +61,7 @@ class PointerLockInputController {
 
     onKeyDown(e: KeyboardEvent) {
         // Stop ctrl+s from saving ctrl +d from bookmark - doesn't work for ctrl+w exit (use fullscreen for this)
-        if ((e.keyCode === 68 || e.keyCode === 83 || e.keyCode === 65) && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        if ((e.keyCode === 68 || e.keyCode === 83 || e.keyCode === 65) && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
             e.preventDefault();
         }
 
@@ -155,7 +90,7 @@ class PointerLockInputController {
                 break;
             case 73: // i
                 this.statsEnabled = !this.statsEnabled;
-                console.log("Stats go here but are disbaled atm")
+                console.log('Stats go here but are disbaled atm')
                 // if (this.statsEnabled) {
                 //     this.cfg.gameContainer.appendChild(this.stats.dom);
                 // } else {
@@ -217,6 +152,14 @@ class PointerLockInputController {
                 break;
         }
     }
+
+    lock(pointerLocked: boolean) {
+        if (pointerLocked) {
+            this.plc.lock();
+        } else {
+            this.plc.unlock();
+        }
+        
+        this.isLocked = pointerLocked
+    }
 }
-
-
