@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DesktopControls from '../DesktopApp/DesktopControls';
 import { ThreeCanvas } from '../ThreeCanvas';
-import Canvas from '../../canvas/Canvas';
+import GameCanvas from '../../canvas/GameCanvas';
 import PointerLockInputController from '../../canvas/PointerLockInputController';
+import useStore from '../../utils/store';
+import {Statistics} from "../Statistics";
 
 interface AppProps {
-    canvas: Canvas;
+    canvas: GameCanvas;
 }
 
 export default function DesktopApp(props: AppProps) {
@@ -18,10 +20,10 @@ export default function DesktopApp(props: AppProps) {
     useEffect(() => {
         const controller = new PointerLockInputController(canvas);
 
-        const onMouseDown = (e: MouseEvent) => controller.onMouseDown(e)
-        const onMouseUp = (e: MouseEvent) => controller.onMouseUp(e)
-        const onKeyDown = (e: KeyboardEvent) => controller.onKeyDown(e)
-        const onKeyUp = (e: KeyboardEvent) => controller.onKeyUp(e)
+        const onMouseDown = (e: MouseEvent) => controller.onMouseDown(e);
+        const onMouseUp = (e: MouseEvent) => controller.onMouseUp(e);
+        const onKeyDown = (e: KeyboardEvent) => controller.onKeyDown(e);
+        const onKeyUp = (e: KeyboardEvent) => controller.onKeyUp(e);
         document.addEventListener('mousedown', onMouseDown);
         document.addEventListener('mouseup', onMouseUp);
         document.addEventListener('keydown', onKeyDown);
@@ -30,7 +32,7 @@ export default function DesktopApp(props: AppProps) {
         const onUnlock = () => {
             setPointerLockedState(false);
             controllerRef.current.lock(false);
-        }
+        };
         controller.plc.addEventListener("unlock", onUnlock);
 
         // Setup resize listeners
@@ -39,7 +41,7 @@ export default function DesktopApp(props: AppProps) {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             canvas.getRenderer().setSize(window.innerWidth, window.innerHeight);
-        }
+        };
         window.addEventListener('resize', onWindowResize, false);
 
         canvas.animate(() => controller.handleControl());
@@ -60,10 +62,10 @@ export default function DesktopApp(props: AppProps) {
     const setPointerLocked = () => {
         setPointerLockedState(true);
         controllerRef.current.lock(true)
-    }
+    };
 
     return <>
         <DesktopControls setPointerLocked={setPointerLocked} pointerLocked={pointerLocked}/>
         <ThreeCanvas canvas={canvas} />
-    </>
-};
+        </>
+    };

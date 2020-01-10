@@ -1,10 +1,10 @@
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-import Canvas from './Canvas';
+import GameCanvas from './GameCanvas';
 
 export default class OrbitControlsInputController {
     controls: OrbitControls;
 
-    constructor(canvas: Canvas) {
+    constructor(canvas: GameCanvas) {
         this.controls = new OrbitControls(canvas.getCamera(), canvas.getRenderer().domElement);
     }
 

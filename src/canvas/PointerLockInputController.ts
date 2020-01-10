@@ -1,7 +1,8 @@
 import * as THREE from 'three'
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls';
 import Stats from 'three/examples/jsm/libs/stats.module';
-import Canvas from './Canvas';
+import GameCanvas from './GameCanvas';
+import {toggleStats} from '../utils/store'
 
 const clock = new THREE.Clock();
 const moveAccel = 50.0;
@@ -21,10 +22,8 @@ export default class PointerLockInputController {
 
     // @ts-ignore
     stats: Stats = new Stats();
-    statsEnabled: boolean = false;
 
-
-    constructor(canvas: Canvas) {
+    constructor(canvas: GameCanvas) {
         this.plc = new PointerLockControls(canvas.getCamera(), canvas.getRenderer().domElement);
 
         document.addEventListener('mousedown', e => this.onMouseDown(e));
@@ -55,7 +54,6 @@ export default class PointerLockInputController {
         }
 
         // TODO: Remove this from controller and put into its own class/module
-        if (this.statsEnabled)
             this.stats.update();
     }
 
@@ -64,6 +62,7 @@ export default class PointerLockInputController {
         if ((e.keyCode === 68 || e.keyCode === 83 || e.keyCode === 65) && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
             e.preventDefault();
         }
+
 
         switch (e.keyCode) {
             case 38: // up
@@ -89,13 +88,8 @@ export default class PointerLockInputController {
                 this.moveDown = true;
                 break;
             case 73: // i
-                this.statsEnabled = !this.statsEnabled;
-                console.log('Stats go here but are disbaled atm')
-                // if (this.statsEnabled) {
-                //     this.cfg.gameContainer.appendChild(this.stats.dom);
-                // } else {
-                //     this.cfg.gameContainer.removeChild(this.stats.dom);
-                // }
+                toggleStats();
+
                 break;
         }
     }
@@ -159,7 +153,7 @@ export default class PointerLockInputController {
         } else {
             this.plc.unlock();
         }
-        
+
         this.isLocked = pointerLocked
     }
 }

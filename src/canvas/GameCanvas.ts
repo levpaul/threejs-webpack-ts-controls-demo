@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {getGround} from '../utils/terrain';
 
-export default class Canvas {
+export default class GameCanvas {
     camera: THREE.PerspectiveCamera;
     scene: THREE.Scene;
     cube: THREE.Mesh;
