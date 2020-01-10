@@ -49,6 +49,7 @@ export default function DesktopApp(props: AppProps) {
         controllerRef.current = controller;
 
         return function cleanup() {
+            console.log("fasdf")
             document.removeEventListener('mousedown', onMouseDown);
             document.removeEventListener('mouseup', onMouseUp);
             document.removeEventListener('keydown', onKeyDown);

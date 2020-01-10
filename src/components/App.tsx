@@ -3,11 +3,12 @@ import GameCanvas from '../canvas/GameCanvas';
 import MobileApp from './MobileApp';
 import DesktopApp from './DesktopApp';
 import {isMobile} from '../utils/helpers';
-
+import useStore from '../utils/store';
 
 export default function App() {
     const mobile = isMobile();
     const canvasRef = useRef<GameCanvas>(new GameCanvas());
+    // let stats = useStore(s => s.showStats);
 
     return mobile ?
         <MobileApp canvas={canvasRef.current}/> :

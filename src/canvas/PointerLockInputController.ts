@@ -63,7 +63,6 @@ export default class PointerLockInputController {
             e.preventDefault();
         }
 
-
         switch (e.keyCode) {
             case 38: // up
             case 87: // w
@@ -148,6 +147,7 @@ export default class PointerLockInputController {
     }
 
     lock(pointerLocked: boolean) {
+
         if (pointerLocked) {
             this.plc.lock();
         } else {
