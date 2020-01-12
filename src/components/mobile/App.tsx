@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { ThreeCanvas } from './ThreeCanvas';
-import GameCanvas from '../canvas/GameCanvas';
-import OrbitControlsInputController from '../canvas/OrbitControlsInputController';
+import { ThreeCanvas } from '../ThreeCanvas';
+import GameCanvas from '../../canvas/GameCanvas';
+import OrbitControlsInputController from '../../canvas/OrbitControlsInputController';
 
 interface AppProps {
     canvas: GameCanvas;
