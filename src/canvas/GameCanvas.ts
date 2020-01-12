@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {getGround} from '../utils/terrain';
+import {GetAnimationHandlers} from "../utils/store";
 
 export default class GameCanvas {
     camera: THREE.PerspectiveCamera;
@@ -62,6 +63,11 @@ export default class GameCanvas {
         this.cube.rotation.y += 0.01;
 
         handleControl();
+
+        for (let h of GetAnimationHandlers()) {
+            h();
+        }
+
 
         this.renderer.render(this.scene, this.camera);
     };

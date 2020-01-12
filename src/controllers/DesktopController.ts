@@ -1,13 +1,13 @@
 import * as THREE from 'three'
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls';
 import Stats from 'three/examples/jsm/libs/stats.module';
-import GameCanvas from './GameCanvas';
-import {toggleStats} from '../utils/store'
+import GameCanvas from '../canvas/GameCanvas';
+import {HUDActions} from "../utils/store";
 
 const clock = new THREE.Clock();
 const moveAccel = 50.0;
 
-export default class PointerLockInputController {
+export default class DesktopController {
     plc: PointerLockControls;
 
     velocity: THREE.Vector3 = new THREE.Vector3();
@@ -20,8 +20,6 @@ export default class PointerLockInputController {
     moveDown: boolean = false;
     isLocked: boolean = false;
 
-    // @ts-ignore
-    stats: Stats = new Stats();
 
     constructor(canvas: GameCanvas) {
         this.plc = new PointerLockControls(canvas.getCamera(), canvas.getRenderer().domElement);
@@ -54,7 +52,7 @@ export default class PointerLockInputController {
         }
 
         // TODO: Remove this from controller and put into its own class/module
-            this.stats.update();
+        //     this.stats.update();
     }
 
     onKeyDown(e: KeyboardEvent) {
@@ -88,8 +86,7 @@ export default class PointerLockInputController {
                 this.moveDown = true;
                 break;
             case 73: // i
-                toggleStats();
-
+                HUDActions.toggleStats();
                 break;
         }
     }

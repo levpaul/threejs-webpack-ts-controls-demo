@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import DesktopControls from '../DesktopApp/DesktopControls';
+import DesktopControls from './/DesktopControls';
 import { ThreeCanvas } from '../ThreeCanvas';
 import GameCanvas from '../../canvas/GameCanvas';
-import PointerLockInputController from '../../canvas/PointerLockInputController';
+import DesktopController from '../../controllers/DesktopController';
 import useStore from '../../utils/store';
-import {Statistics} from "../Statistics";
+import {Statistics} from "./Statistics";
+import DesktopHUD from "./DesktopHUD";
 
 interface AppProps {
     canvas: GameCanvas;
@@ -15,19 +16,10 @@ export default function DesktopApp(props: AppProps) {
 
     const [pointerLocked, setPointerLockedState] = useState(false);
 
-    const controllerRef = useRef<PointerLockInputController>(null);
+    const controllerRef = useRef<DesktopController>(null);
 
     useEffect(() => {
-        const controller = new PointerLockInputController(canvas);
-
-        const onMouseDown = (e: MouseEvent) => controller.onMouseDown(e);
-        const onMouseUp = (e: MouseEvent) => controller.onMouseUp(e);
-        const onKeyDown = (e: KeyboardEvent) => controller.onKeyDown(e);
-        const onKeyUp = (e: KeyboardEvent) => controller.onKeyUp(e);
-        document.addEventListener('mousedown', onMouseDown);
-        document.addEventListener('mouseup', onMouseUp);
-        document.addEventListener('keydown', onKeyDown);
-        document.addEventListener('keyup', onKeyUp);
+        const controller = new DesktopController(canvas);
 
         const onUnlock = () => {
             setPointerLockedState(false);
@@ -49,11 +41,6 @@ export default function DesktopApp(props: AppProps) {
         controllerRef.current = controller;
 
         return function cleanup() {
-            document.removeEventListener('mousedown', onMouseDown);
-            document.removeEventListener('mouseup', onMouseUp);
-            document.removeEventListener('keydown', onKeyDown);
-            document.removeEventListener('keyup', onKeyUp);
-
             controller.plc.removeEventListener("unlock", onUnlock);
             window.removeEventListener('resize', onWindowResize, false);
         }
@@ -65,7 +52,8 @@ export default function DesktopApp(props: AppProps) {
     };
 
     return <>
-        <DesktopControls setPointerLocked={setPointerLocked} pointerLocked={pointerLocked}/>
         <ThreeCanvas canvas={canvas} />
+        <DesktopControls pointerLocked={pointerLocked} setPointerLocked={setPointerLocked} />
+        <Statistics />
         </>
     };
