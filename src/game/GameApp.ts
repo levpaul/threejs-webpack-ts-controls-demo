@@ -8,6 +8,14 @@ export interface AnimationHandler {
     handler(): void
 }
 
+const gameSettings = {
+    cameraFOV: 45,
+    cameraNear: 0.1,
+    cameraFar: 1000,
+    fogNear: 49,
+    fogFar: 99,
+};
+
 export default class GameApp {
     camera: THREE.PerspectiveCamera;
     scene: THREE.Scene;
@@ -18,10 +26,10 @@ export default class GameApp {
         // this.scene
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xa0a0a0);
-        this.scene.fog = new THREE.Fog(0xa0a0a0, 5, 15);
+        this.scene.fog = new THREE.Fog(0xa0a0a0, gameSettings.fogNear, gameSettings.fogFar);
 
         // Camera
-        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.camera = new THREE.PerspectiveCamera(gameSettings.cameraFOV, window.innerWidth / window.innerHeight, gameSettings.cameraNear, gameSettings.cameraFar);
 
         // Cube
         const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
