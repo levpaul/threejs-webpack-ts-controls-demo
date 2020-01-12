@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls';
 import Stats from 'three/examples/jsm/libs/stats.module';
-import GameCanvas from '../canvas/GameCanvas';
+import GameCanvas from '../game/GameApp';
 import {HUDActions} from "../utils/store";
 
 const clock = new THREE.Clock();

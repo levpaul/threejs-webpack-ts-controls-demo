@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DesktopControls from './/DesktopControls';
 import { ThreeCanvas } from '../ThreeCanvas';
-import GameCanvas from '../../canvas/GameCanvas';
+import GameCanvas from '../../game/GameApp';
 import DesktopController from '../../controllers/DesktopController';
 import useStore from '../../utils/store';
 import {Statistics} from "./Statistics";

@@ -1,5 +1,5 @@
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-import GameCanvas from './GameCanvas';
+import GameCanvas from './GameApp';
 
 export default class OrbitControlsInputController {
     controls: OrbitControls;

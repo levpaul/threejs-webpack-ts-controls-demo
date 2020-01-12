@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import GameCanvas from '../canvas/GameCanvas';
+import GameCanvas from '../game/GameApp';
 import MobileApp from './mobile';
 import DesktopApp from './desktop';
 import {isMobile} from '../utils/helpers';

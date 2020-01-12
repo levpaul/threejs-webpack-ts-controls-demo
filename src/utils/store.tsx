@@ -1,10 +1,13 @@
 import create from "zustand";
 
+interface AnimationHandler {
+
+}
 
 export const [useStore, api] = create((set, get) => {
     return {
         showStats: false,
-        animationHandlers: [],
+        animationHandlers: Array<AnimationHandler>(),
     }
 });
 

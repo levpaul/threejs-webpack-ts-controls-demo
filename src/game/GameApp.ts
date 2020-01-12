@@ -2,7 +2,12 @@ import * as THREE from 'three';
 import {getGround} from '../utils/terrain';
 import {GetAnimationHandlers} from "../utils/store";
 
-export default class GameCanvas {
+export interface AnimationHandler {
+    name: string
+    handler(): void
+}
+
+export default class GameApp {
     camera: THREE.PerspectiveCamera;
     scene: THREE.Scene;
     cube: THREE.Mesh;
@@ -65,9 +70,8 @@ export default class GameCanvas {
         handleControl();
 
         for (let h of GetAnimationHandlers()) {
-            h();
+            h.handle();
         }
-
 
         this.renderer.render(this.scene, this.camera);
     };

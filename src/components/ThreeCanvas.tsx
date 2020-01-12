@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import GameCanvas from '../canvas/GameCanvas';
+import GameCanvas from '../game/GameApp';
 
 interface ThreeCanvasProps {
     canvas: GameCanvas

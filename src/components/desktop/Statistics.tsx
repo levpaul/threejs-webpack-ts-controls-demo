@@ -11,7 +11,7 @@ export function Statistics() {
         // @ts-ignore
         const newStats = new Stats();
         setStats(newStats); // This is async?
-        AddAnimationHandler(() => {newStats.update()});
+        AddAnimationHandler({name: "stats-update", handle: () => {newStats.update()}});
     }, []);
 
     if (stats && statsRef)
