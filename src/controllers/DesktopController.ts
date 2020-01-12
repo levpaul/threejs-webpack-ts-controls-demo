@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls';
 import GameCanvas from '../game/GameApp';
-import {AddAnimationHandler, HUDActions} from "../utils/store";
+import {AddAnimationHandler, HUDActions, SetRandom} from "../utils/Store";
 
 const clock = new THREE.Clock();
 const moveAccel = 50.0;

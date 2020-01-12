@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {getGround} from './Terrain';
-import {GetAnimationHandlers} from "../utils/store";
+import {GetAnimationHandlers} from "../utils/Store";
 
 export interface AnimationHandler {
     name: string

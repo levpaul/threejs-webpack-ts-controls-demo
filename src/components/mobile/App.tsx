@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {ThreeCanvas} from '../ThreeCanvas';
 import GameCanvas from '../../game/GameApp';
 import MobileController from '../../controllers/MobileController';
-import {AddAnimationHandler} from "../../utils/store";
+import {AddAnimationHandler} from "../../utils/Store";
 
 interface AppProps {
     canvas: GameCanvas;

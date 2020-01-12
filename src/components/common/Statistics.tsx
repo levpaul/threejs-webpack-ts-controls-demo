@@ -1,31 +1,28 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect} from 'react'
 import Stats from "three/examples/jsm/libs/stats.module";
-import useStore, {AddAnimationHandler} from '../../utils/store';
+import useStore, {AddAnimationHandler} from '../../utils/Store';
 
-export function Statistics() {
-    const {showStats} = useStore(state => state);
-    const statsRef = React.useRef(null);
+export const Statistics = () => {
+    const showStats = useStore(state => state.showStats);
     // @ts-ignore
-    const [stats, setStats] = useState(new Stats());
+    const threeStats = React.useRef(new Stats());
+    const statsRef = React.useRef(null);
 
     useEffect(() => {
         AddAnimationHandler({
             name: "stats-update", handle: () => {
-                stats.update()
+                threeStats.current.update()
             }
         });
     }, []);
 
-    if (stats && statsRef.current)
+    if (statsRef.current)
         if (showStats)
-            statsRef.current.appendChild(stats.dom);
+            statsRef.current.appendChild(threeStats.current.dom);
         else
             statsRef.current.innerHTML = "";
 
-    let s = {
-        display: "inline",
-        position: "absolute",
-    };
-
     return <div ref={statsRef}/>
 };
+
+export default Statistics;

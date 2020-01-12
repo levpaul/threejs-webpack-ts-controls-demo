@@ -3,7 +3,7 @@ import HUD from './HUD';
 import {ThreeCanvas} from '../ThreeCanvas';
 import GameCanvas from '../../game/GameApp';
 import DesktopController from '../../controllers/DesktopController';
-import {Statistics} from "../common/Statistics";
+import Statistics from '../common/Statistics';
 
 interface AppProps {
     canvas: GameCanvas;

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import useStore from '../../utils/store';
+import useStore from '../../utils/Store';
 import DesktopController from "../../controllers/DesktopController";
 
 interface HUDProps {
