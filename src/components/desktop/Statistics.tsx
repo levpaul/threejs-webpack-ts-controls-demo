@@ -5,16 +5,14 @@ import useStore, {AddAnimationHandler} from '../../utils/store';
 export function Statistics() {
     const {showStats} = useStore(state => state);
     const statsRef = React.useRef(null);
-    const [stats, setStats] = useState();
+    // @ts-ignore
+    const [stats, setStats] = useState(new Stats());
 
     useEffect(() => {
-        // @ts-ignore
-        const newStats = new Stats();
-        setStats(newStats); // This is async?
-        AddAnimationHandler({name: "stats-update", handle: () => {newStats.update()}});
+        AddAnimationHandler({name: "stats-update", handle: () => {stats.update()}});
     }, []);
 
-    if (stats && statsRef)
+    if (stats && statsRef.current)
         if (showStats)
             statsRef.current.appendChild(stats.dom);
         else
