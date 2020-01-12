@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import {getGround} from '../utils/terrain';
+import {getGround} from './Terrain';
 import {GetAnimationHandlers} from "../utils/store";
 
 export interface AnimationHandler {
     name: string
+
     handler(): void
 }
 
@@ -26,7 +27,7 @@ export default class GameApp {
         const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
         const material = new THREE.MeshNormalMaterial({wireframe: false});
         this.cube = new THREE.Mesh(geometry, material);
-        this.cube.translateY(0.3);
+        this.cube.translateY(1);
         this.scene.add(this.cube);
 
         // Terrain
@@ -51,6 +52,9 @@ export default class GameApp {
         // Final Camera
         this.camera.position.set(3, 3.5, -4);
         this.camera.lookAt(this.cube.position);
+
+        // Begin animation
+        this.animate();
     }
 
     getCamera() {
@@ -61,13 +65,12 @@ export default class GameApp {
         return this.renderer;
     }
 
-    animate(handleControl: () => void) {
-        requestAnimationFrame(() => this.animate(handleControl));
+    animate() {
+        requestAnimationFrame(() => this.animate());
 
         this.cube.rotation.x += 0.01;
         this.cube.rotation.y += 0.01;
 
-        handleControl();
 
         for (let h of GetAnimationHandlers()) {
             h.handle();

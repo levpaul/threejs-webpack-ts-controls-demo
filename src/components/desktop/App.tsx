@@ -1,59 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
-import DesktopControls from './/DesktopControls';
-import { ThreeCanvas } from '../ThreeCanvas';
+import React, {useRef} from 'react';
+import HUD from './HUD';
+import {ThreeCanvas} from '../ThreeCanvas';
 import GameCanvas from '../../game/GameApp';
 import DesktopController from '../../controllers/DesktopController';
-import useStore from '../../utils/store';
-import {Statistics} from "./Statistics";
-import DesktopHUD from "./DesktopHUD";
+import {Statistics} from "../common/Statistics";
 
 interface AppProps {
     canvas: GameCanvas;
 }
 
 export default function DesktopApp(props: AppProps) {
-    const { canvas } = props;
-
-    const [pointerLocked, setPointerLockedState] = useState(false);
-
-    const controllerRef = useRef<DesktopController>(null);
-
-    useEffect(() => {
-        const controller = new DesktopController(canvas);
-
-        const onUnlock = () => {
-            setPointerLockedState(false);
-            controllerRef.current.lock(false);
-        };
-        controller.plc.addEventListener("unlock", onUnlock);
-
-        // Setup resize listeners
-        const onWindowResize = () => {
-            const camera = canvas.getCamera();
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            canvas.getRenderer().setSize(window.innerWidth, window.innerHeight);
-        };
-        window.addEventListener('resize', onWindowResize, false);
-
-        canvas.animate(() => controller.handleControl());
-
-        controllerRef.current = controller;
-
-        return function cleanup() {
-            controller.plc.removeEventListener("unlock", onUnlock);
-            window.removeEventListener('resize', onWindowResize, false);
-        }
-    }, [canvas]);
-
-    const setPointerLocked = () => {
-        setPointerLockedState(true);
-        controllerRef.current.lock(true)
-    };
+    const {canvas} = props;
+    const controllerRef = useRef<DesktopController>(new DesktopController(canvas));
 
     return <>
-        <ThreeCanvas canvas={canvas} />
-        <DesktopControls pointerLocked={pointerLocked} setPointerLocked={setPointerLocked} />
-        <Statistics />
-        </>
-    };
+        <ThreeCanvas canvas={canvas}/>
+        <HUD controls={controllerRef.current}/>
+        <Statistics/>
+    </>
+};

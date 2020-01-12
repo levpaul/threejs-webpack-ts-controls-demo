@@ -1,7 +1,7 @@
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-import GameCanvas from './GameApp';
+import GameCanvas from '../game/GameApp';
 
-export default class OrbitControlsInputController {
+export default class MobileController {
     controls: OrbitControls;
 
     constructor(canvas: GameCanvas) {

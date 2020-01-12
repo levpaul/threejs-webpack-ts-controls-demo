@@ -1,8 +1,7 @@
 import * as THREE from 'three'
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls';
-import Stats from 'three/examples/jsm/libs/stats.module';
 import GameCanvas from '../game/GameApp';
-import {HUDActions} from "../utils/store";
+import {AddAnimationHandler, HUDActions} from "../utils/store";
 
 const clock = new THREE.Clock();
 const moveAccel = 50.0;
@@ -28,6 +27,8 @@ export default class DesktopController {
         document.addEventListener('mouseup', e => this.onMouseUp(e));
         document.addEventListener('keydown', e => this.onKeyDown(e));
         document.addEventListener('keyup', e => this.onKeyUp(e));
+
+        AddAnimationHandler({name: "controls", handle: () => this.handleControl()});
     }
 
     handleControl() {
@@ -50,12 +51,10 @@ export default class DesktopController {
             this.plc.moveForward(-this.velocity.z * timeDelta);
             this.plc.getObject().position.y += this.velocity.y * timeDelta;
         }
-
-        // TODO: Remove this from controller and put into its own class/module
-        //     this.stats.update();
     }
 
     onKeyDown(e: KeyboardEvent) {
+        // console.log("KEYeve")
         // Stop ctrl+s from saving ctrl +d from bookmark - doesn't work for ctrl+w exit (use fullscreen for this)
         if ((e.keyCode === 68 || e.keyCode === 83 || e.keyCode === 65) && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
             e.preventDefault();
@@ -144,7 +143,6 @@ export default class DesktopController {
     }
 
     lock(pointerLocked: boolean) {
-
         if (pointerLocked) {
             this.plc.lock();
         } else {

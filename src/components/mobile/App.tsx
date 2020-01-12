@@ -1,19 +1,20 @@
-import React, { useEffect } from 'react';
-import { ThreeCanvas } from '../ThreeCanvas';
+import React, {useEffect} from 'react';
+import {ThreeCanvas} from '../ThreeCanvas';
 import GameCanvas from '../../game/GameApp';
-import OrbitControlsInputController from '../../game/OrbitControlsInputController';
+import MobileController from '../../controllers/MobileController';
+import {AddAnimationHandler} from "../../utils/store";
 
 interface AppProps {
     canvas: GameCanvas;
 }
 
 export default function MobileApp(props: AppProps) {
-    const { canvas } = props;
+    const {canvas} = props;
 
     useEffect(() => {
-        const controller = new OrbitControlsInputController(canvas);
-        canvas.animate(() => controller.handleControl());
+        const controller = new MobileController(canvas);
+        AddAnimationHandler({name: "controls", handle: () => controller.handleControl()});
     }, [canvas]);
 
-    return <ThreeCanvas canvas={canvas} />
+    return <ThreeCanvas canvas={canvas}/>
 };

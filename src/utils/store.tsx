@@ -1,13 +1,11 @@
 import create from "zustand";
-
-interface AnimationHandler {
-
-}
+import {AnimationHandler} from "../game/GameApp";
 
 export const [useStore, api] = create((set, get) => {
     return {
         showStats: false,
         animationHandlers: Array<AnimationHandler>(),
+        controls: null,
     }
 });
 
@@ -17,7 +15,7 @@ export const HUDActions = {
     }
 };
 
-export const AddAnimationHandler = function(handler) {
+export const AddAnimationHandler = function (handler) {
     api.getState().animationHandlers.push(handler)
 };
 

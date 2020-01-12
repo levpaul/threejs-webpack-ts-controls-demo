@@ -9,7 +9,11 @@ export function Statistics() {
     const [stats, setStats] = useState(new Stats());
 
     useEffect(() => {
-        AddAnimationHandler({name: "stats-update", handle: () => {stats.update()}});
+        AddAnimationHandler({
+            name: "stats-update", handle: () => {
+                stats.update()
+            }
+        });
     }, []);
 
     if (stats && statsRef.current)
