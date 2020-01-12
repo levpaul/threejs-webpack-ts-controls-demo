@@ -41,15 +41,6 @@ export default function DesktopApp(props: AppProps) {
         controllerRef.current = controller;
 
         return function cleanup() {
-<<<<<<< HEAD:src/components/DesktopApp/DesktopApp.tsx
-            console.log("fasdf")
-            document.removeEventListener('mousedown', onMouseDown);
-            document.removeEventListener('mouseup', onMouseUp);
-            document.removeEventListener('keydown', onKeyDown);
-            document.removeEventListener('keyup', onKeyUp);
-
-=======
->>>>>>> stats:src/components/desktop/App.tsx
             controller.plc.removeEventListener("unlock", onUnlock);
             window.removeEventListener('resize', onWindowResize, false);
         }
