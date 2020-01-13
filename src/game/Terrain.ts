@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 
-const groundSegmentsWidth: number = 10;
-const groundSegmentsDepth: number = 10;
-const groundSegmentsWidthCount: number = 4;
-const groundSegmentsDepthCount: number = 4;
-const maxHeight: number = 0;
-const hMap: number[] = new Array((groundSegmentsDepth + 1) * (groundSegmentsWidth + 1));
+const groundSegmentsWidth: number = 50;
+const groundSegmentsDepth: number = 50;
+const groundSegmentsWidthCount: number = 100;
+const groundSegmentsDepthCount: number = 100;
+const maxHeight: number = 1;
+const hMap: number[] = new Array((groundSegmentsDepthCount + 1) * (groundSegmentsWidthCount + 1));
 
 export function getGround() {
     for (let i = 0; i < hMap.length; i++) {
