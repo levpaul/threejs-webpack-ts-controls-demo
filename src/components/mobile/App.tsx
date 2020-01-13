@@ -1,20 +1,20 @@
 import React, {useEffect} from 'react';
 import {ThreeCanvas} from '../ThreeCanvas';
-import GameCanvas from '../../game/GameApp';
+import GameApp from '../../game/GameApp';
 import MobileController from '../../controllers/MobileController';
 import {AddAnimationHandler} from "../../utils/Store";
 
 interface AppProps {
-    canvas: GameCanvas;
+    game: GameApp;
 }
 
 export default function MobileApp(props: AppProps) {
-    const {canvas} = props;
+    const {game} = props;
 
     useEffect(() => {
-        const controller = new MobileController(canvas);
-        AddAnimationHandler({name: "controls", handle: () => controller.handleControl()});
-    }, [canvas]);
+        const controller = new MobileController(game);
+        AddAnimationHandler({name: 'controls', handle: () => controller.handleControl()});
+    }, [game]);
 
-    return <ThreeCanvas canvas={canvas}/>
+    return <ThreeCanvas game={game}/>
 };

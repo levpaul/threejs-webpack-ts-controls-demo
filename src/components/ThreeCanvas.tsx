@@ -1,25 +1,25 @@
 import React, {useEffect} from 'react'
-import GameCanvas from '../game/GameApp';
+import GameApp from '../game/GameApp';
 
 interface ThreeCanvasProps {
-    canvas: GameCanvas
+    game: GameApp
 }
 
 export function ThreeCanvas(props: ThreeCanvasProps) {
-    const {canvas} = props;
+    const {game} = props;
     // Get the actual THREE.js Canvas
     let ref = React.useRef<HTMLCanvasElement>();
 
     useEffect(() => {
-        ref.current.replaceWith(canvas.getRenderer().domElement);
+        ref.current.replaceWith(game.getRenderer().domElement);
         const onWindowResize = () => {
-            const camera = canvas.getCamera();
+            const camera = game.getCamera();
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-            canvas.getRenderer().setSize(window.innerWidth, window.innerHeight);
+            game.getRenderer().setSize(window.innerWidth, window.innerHeight);
         };
         window.addEventListener('resize', onWindowResize, false);
-    }, [canvas]);
+    }, [game]);
 
     return <canvas ref={ref as React.MutableRefObject<HTMLCanvasElement>}/>;
 };

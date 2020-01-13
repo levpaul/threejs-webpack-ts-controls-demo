@@ -1,12 +1,12 @@
 import React, {useRef} from 'react';
-import GameCanvas from '../game/GameApp';
+import GameApp from '../game/GameApp';
 import MobileApp from './mobile';
 import DesktopApp from './desktop';
 
 export default function App() {
     const mobile: boolean = /mobile/i.test(window.navigator.userAgent);
-    const canvasRef = useRef<GameCanvas>(new GameCanvas());
+    const gameRef = useRef<GameApp>(new GameApp());
 
-    return mobile ? <MobileApp canvas={canvasRef.current}/> :
-        <DesktopApp canvas={canvasRef.current}/>
+    return mobile ? <MobileApp game={gameRef.current}/> :
+        <DesktopApp game={gameRef.current}/>
 };
