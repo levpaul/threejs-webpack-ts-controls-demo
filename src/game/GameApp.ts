@@ -1,17 +1,19 @@
 import * as THREE from 'three';
 import {getGround} from './Terrain';
 import {GetAnimationHandlers} from "../utils/Store";
+import {Vector2} from "three";
 
 export interface AnimationHandler {
     name: string
 
-    handler(): void
+    handle(): void
 }
 
 const gameSettings = {
     cameraFOV: 45,
     cameraNear: 0.1,
     cameraFar: 1000,
+    cameraHeight: 4,
     fogNear: 49,
     fogFar: 99,
 };
@@ -19,8 +21,8 @@ const gameSettings = {
 export default class GameApp {
     camera: THREE.PerspectiveCamera;
     scene: THREE.Scene;
-    cube: THREE.Mesh;
     renderer: THREE.WebGLRenderer;
+    raycaster: THREE.Raycaster;
 
     constructor() {
         // this.scene
@@ -30,13 +32,7 @@ export default class GameApp {
 
         // Camera
         this.camera = new THREE.PerspectiveCamera(gameSettings.cameraFOV, window.innerWidth / window.innerHeight, gameSettings.cameraNear, gameSettings.cameraFar);
-
-        // Cube
-        const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-        const material = new THREE.MeshNormalMaterial({wireframe: false});
-        this.cube = new THREE.Mesh(geometry, material);
-        this.cube.translateY(1);
-        this.scene.add(this.cube);
+        this.raycaster = new THREE.Raycaster();
 
         // Terrain
         this.scene.add(getGround());
@@ -47,19 +43,23 @@ export default class GameApp {
 
         // Light
         const lights: Array<THREE.Light> = new Array<THREE.Light>();
-        lights.push(new THREE.AmbientLight(0x333333));
-        lights.push(new THREE.PointLight(0xffffff, 1, 0));
-        lights.push(new THREE.PointLight(0xffffff, 1, 0));
-        lights.push(new THREE.PointLight(0xffffff, 1, 0));
-        lights[2].position.set(10, 0, 0);
-        lights[3].position.set(0, 0, 7);
+        lights.push(new THREE.AmbientLight(0xee3333));
+        lights.push(new THREE.PointLight(0xffffff, 3, 0));
+        lights.push(new THREE.PointLight(0xffffff, 8, 0));
+        lights.push(new THREE.PointLight(0xffffff, 4, 0));
+        lights[2].position.set(4, 1, 0);
+        lights[3].position.set(0, 1, 6);
         for (let l of lights) {
             this.scene.add(l);
         }
 
+        var axesHelper = new THREE.AxesHelper( 5 );
+        axesHelper.receiveShadow = false;
+        this.scene.add( axesHelper );
+
         // Final Camera
-        this.camera.position.set(3, 3.5, -4);
-        this.camera.lookAt(this.cube.position);
+        this.camera.position.set(-1, gameSettings.cameraHeight, -4);
+        this.camera.lookAt(0,0,2);
 
         // Begin animation
         this.animate();
@@ -75,10 +75,6 @@ export default class GameApp {
 
     animate() {
         requestAnimationFrame(() => this.animate());
-
-        this.cube.rotation.x += 0.01;
-        this.cube.rotation.y += 0.01;
-
 
         for (let h of GetAnimationHandlers()) {
             h.handle();

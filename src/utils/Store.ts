@@ -1,5 +1,5 @@
-import create from "zustand";
-import {AnimationHandler} from "../game/GameApp";
+import create from 'zustand';
+import {AnimationHandler} from '../game/GameApp';
 
 export const [useStore, api] = create((set, get) => {
     return {

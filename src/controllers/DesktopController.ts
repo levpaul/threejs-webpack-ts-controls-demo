@@ -1,13 +1,16 @@
 import * as THREE from 'three'
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls';
-import GameCanvas from '../game/GameApp';
-import {AddAnimationHandler, HUDActions, SetRandom} from "../utils/Store";
+import GameApp from '../game/GameApp';
+import {AddAnimationHandler, HUDActions} from '../utils/Store';
+import {Color, Vector2, Vector3} from "three";
+import {PrintVec3} from "../utils/Helpers";
 
 const clock = new THREE.Clock();
 const moveAccel = 50.0;
 
 export default class DesktopController {
     plc: PointerLockControls;
+    game: GameApp;
 
     velocity: THREE.Vector3 = new THREE.Vector3();
     direction: THREE.Vector3 = new THREE.Vector3();
@@ -20,8 +23,9 @@ export default class DesktopController {
     isLocked: boolean = false;
 
 
-    constructor(canvas: GameCanvas) {
-        this.plc = new PointerLockControls(canvas.getCamera(), canvas.getRenderer().domElement);
+    constructor(game: GameApp) {
+        this.plc = new PointerLockControls(game.getCamera(), game.getRenderer().domElement);
+        this.game = game;
 
         document.addEventListener('mousedown', e => this.onMouseDown(e));
         document.addEventListener('mouseup', e => this.onMouseUp(e));
@@ -33,6 +37,29 @@ export default class DesktopController {
 
     handleControl() {
         let timeDelta: number = clock.getDelta();
+
+        // let d: Vector3;
+        // this.plc.getDirection(d);
+        // this.game.raycaster.setFromCothiamera(new Vector2(window.innerWidth / 2, window.innerHeight / 2), d.pos);
+        this.game.raycaster.set(this.plc.getObject().position, this.plc.getDirection(new Vector3()));
+        let intersects = this.game.raycaster.intersectObjects(this.game.scene.children, false);
+        for (let i of intersects) {
+            if (i.object.type == "Mesh") {
+
+                // console.log("intersects: " + i.face.color.getHex() + " postion: " + this.plc.getObject().position.x );
+                console.log("Face position: " + PrintVec3(i.point))//.normal)
+                console.log("Face id: " + i.faceIndex)//.normal)
+
+                i.face.color.setColorName("red")
+                if (i.faceIndex % 2 == 0)
+                    i.object.geometry.faces[i.faceIndex+1].color.setColorName("red");
+                else
+                    i.object.geometry.faces[i.faceIndex-1].color.setColorName("red");
+
+                i.object.geometry.colorsNeedUpdate = true;
+            }
+        }
+
         if (this.isLocked) {
             this.velocity.x -= this.velocity.x * 10.0 * timeDelta;
             this.velocity.y -= this.velocity.y * 10.0 * timeDelta;
@@ -54,7 +81,6 @@ export default class DesktopController {
     }
 
     onKeyDown(e: KeyboardEvent) {
-        // console.log("KEYeve")
         // Stop ctrl+s from saving ctrl +d from bookmark - doesn't work for ctrl+w exit (use fullscreen for this)
         if ((e.keyCode === 68 || e.keyCode === 83 || e.keyCode === 65) && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
             e.preventDefault();
