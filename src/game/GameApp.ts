@@ -11,28 +11,26 @@ export interface AnimationHandler {
 
 const gameSettings = {
     cameraFOV: 45,
-    cameraNear: 0.1,
-    cameraFar: 1000,
+    cameraNear: 1,
+    cameraFar: 70,
     cameraHeight: 4,
-    fogNear: 49,
-    fogFar: 99,
+    fogNear: 19,
+    fogFar: 39,
 };
 
 export default class GameApp {
     camera: THREE.PerspectiveCamera;
     scene: THREE.Scene;
     renderer: THREE.WebGLRenderer;
-    raycaster: THREE.Raycaster;
 
     constructor() {
         // this.scene
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xa0a0a0);
-        this.scene.fog = new THREE.Fog(0xa0a0a0, gameSettings.fogNear, gameSettings.fogFar);
+        // this.scene.fog = new THREE.Fog(0xa0a0a0, gameSettings.fogNear, gameSettings.fogFar);
 
         // Camera
         this.camera = new THREE.PerspectiveCamera(gameSettings.cameraFOV, window.innerWidth / window.innerHeight, gameSettings.cameraNear, gameSettings.cameraFar);
-        this.raycaster = new THREE.Raycaster();
 
         // Terrain
         this.scene.add(getGround());
@@ -53,9 +51,9 @@ export default class GameApp {
             this.scene.add(l);
         }
 
-        var axesHelper = new THREE.AxesHelper( 5 );
-        axesHelper.receiveShadow = false;
-        this.scene.add( axesHelper );
+        // var axesHelper = new THREE.AxesHelper( 5 );
+        // axesHelper.receiveShadow = false;
+        // this.scene.add( axesHelper );
 
         // Final Camera
         this.camera.position.set(-1, gameSettings.cameraHeight, -4);

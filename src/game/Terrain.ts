@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {BufferAttribute} from "three";
 
 const groundSegmentsWidth: number = 50;
 const groundSegmentsDepth: number = 50;
@@ -13,15 +14,15 @@ export function getGround() {
     }
 
     let groundP = new THREE.PlaneGeometry(groundSegmentsWidth, groundSegmentsDepth, groundSegmentsWidthCount, groundSegmentsDepthCount);
-    let groundM = new THREE.MeshLambertMaterial({color: 0x331198, wireframe: false, vertexColors: THREE.FaceColors});
+    let groundM = new THREE.MeshPhongMaterial({color: 0x331198, wireframe: false, vertexColors: THREE.FaceColors});
     let ground = new THREE.Mesh(groundP, groundM);
     ground.rotation.x = -Math.PI / 2;
     ground.receiveShadow = true;
 
     let vert: THREE.Geometry = ground.geometry as THREE.Geometry;
-    for (let i = 0; i < vert.vertices.length; i++) {
+    for (let i in hMap)
         vert.vertices[i].z = hMap[i];
-    }
+
 
     return ground;
 }

@@ -4,6 +4,7 @@ import MobileApp from './mobile';
 import DesktopApp from './desktop';
 
 export default function App() {
+    console.log("Main render")
     const mobile: boolean = /mobile/i.test(window.navigator.userAgent);
     const gameRef = useRef<GameApp>(new GameApp());
 

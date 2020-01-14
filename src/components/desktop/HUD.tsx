@@ -26,7 +26,7 @@ export const HUD = (props: HUDProps) => {
         controls.lock(true)
     };
 
-    return pointerLocked ? null : <Instructions pointerLock={setPointerLocked}/>
+    return pointerLocked ? <Crosshair/> : <Instructions pointerLock={setPointerLocked}/>
 };
 
 const Instructions = ({pointerLock}) =>
@@ -40,5 +40,16 @@ const Instructions = ({pointerLock}) =>
             Look: MOUSE
         </div>
     </div>;
+
+const Crosshair = () => {
+    const imgStyle = {
+        width: 32,
+        height: 32,
+        position: 'absolute',
+        top: window.innerHeight/2-16,
+        left: window.innerWidth/2-16,
+    };
+    return <img src={'../../assets/target.png'} style={imgStyle}/>
+};
 
 export default HUD;
